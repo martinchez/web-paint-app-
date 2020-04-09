@@ -1,0 +1,16 @@
+{
+  "name": "dekuclass",
+  "version": "1.0.0",
+  "description": "this is an online whiteboard for teaching in virtual classrooms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "canvas",
+    "html",
+    "dekuclass"
+  ],
+  "author": "martin wainaina",
+  "license": "UNLICENSED"
+}
