@@ -14,6 +14,10 @@ export default class Paint {
         this.tool = tool;
         //console.log(this.tool);
     }
+    set lineWidth(linewidth){
+        this._lineWidth = linewidth;
+        this.context.lineWidth= this._lineWidth;
+    }
     //set lineWidth(lineWidth){
     //    this._lineWidth= linewidth;
     //    this.context.lineWidth = this._lineWidth;
@@ -49,7 +53,7 @@ export default class Paint {
                 this.drawShape();
                 break;
             case TOOL_PENCIL:
-                this.drawFreeLine();
+                this.drawFreeLine(this._lineWidth);
                 break;
             default:
                 break;
@@ -64,9 +68,11 @@ export default class Paint {
     drawShape() {
 
         //this.context.putImageData(this.savedData, 0, 0);
-               
+
         this.context.putImageData(this.savedData, 0, 0);
+
         this.context.beginPath();
+
         if (this.tool == TOOL_LINE) {
             this.context.moveTo(this.startPos.x, this.startPos.y);
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
@@ -90,7 +96,8 @@ export default class Paint {
         this.context.stroke();
 
     }
-    drawFreeLine(){
+    drawFreeLine(lineWidth){
+        this.context.lineWidth=lineWidth;
         this.context.lineTo(this.currentPos.x , this.currentPos.y);
         this.context.stroke();
     }

@@ -3,8 +3,8 @@ import { TOOL_LINE, TOOL_RECTANGLE, TOOL_CIRCLE, TOOL_TRIANGLE, TOOL_PAINT_BUCKE
 import Paint from './paint.class.js';
 
 var paint = new Paint("canvas");
+paint.lineWidth=1;
 paint.activeTool =TOOL_LINE;
-//paint.lineWidth= 1;
 paint.init();
 
 document.querySelectorAll("[data-command]").forEach(
@@ -58,6 +58,9 @@ document.querySelectorAll("[data-line-width]").forEach(
             // console.log(ite.getAttribute("data-line-width"));
             document.querySelector("[data-line-width].active").classList.toggle("active");
             item.classList.toggle("active");
+
+            let linewidth = item.getAttribute("data-line-width");
+            paint.lineWidth = linewidth;
 
            // let linewidth =item.getAttribute("data-line-width");
            // paint.lineWidth=linewidth;
