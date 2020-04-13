@@ -5,6 +5,8 @@ import Paint from './paint.class.js';
 var paint = new Paint("canvas");
 paint.lineWidth=1;
 paint.activeTool =TOOL_LINE;
+paint.brushSize=4;
+paint.selectedTool="#0000";
 paint.init();
 
 document.querySelectorAll("[data-command]").forEach(
@@ -68,12 +70,31 @@ document.querySelectorAll("[data-line-width]").forEach(
     }
 );
 
+document.querySelectorAll("[data-brush-width]").forEach(
+    item => {
+        item.addEventListener("click", e => {
+            // console.log(ite.getAttribute("data-line-width"));
+            document.querySelector("[data-brush-width].active").classList.toggle("active");
+            item.classList.toggle("active");
+
+            let brushSize = item.getAttribute("data-brush-width");
+            paint.brushSize = brushSize;
+
+            // let linewidth =item.getAttribute("data-line-width");
+            // paint.lineWidth=linewidth;
+        });
+    }
+);
+
 document.querySelectorAll("[data-color]").forEach(
     item => {
         item.addEventListener("click", e => {
             // console.log(ite.getAttribute("data-color"));
             document.querySelector("[data-color].active").classList.toggle("active");
             item.classList.toggle("active");
+            let color =item.getAttribute("data-color");
+
+            paint.selectedColor= color;
         });
     }
 );

@@ -18,6 +18,14 @@ export default class Paint {
         this._lineWidth = linewidth;
         this.context.lineWidth= this._lineWidth;
     }
+    set brushSize(brushsize){
+        this._brushSize=this.brushsize
+        
+    }
+    set selectedColor(color){
+        this.color= color;
+        this.context.strokeStyle= this.color;
+    }
     //set lineWidth(lineWidth){
     //    this._lineWidth= linewidth;
     //    this.context.lineWidth = this._lineWidth;
@@ -35,7 +43,8 @@ export default class Paint {
 
         this.startPos = getMouseCoordsOnCanvas(e, this.canvas);
 
-        if (this.tool == TOOL_PENCIL) {
+        if (this.tool == TOOL_PENCIL || this.tool == TOOL_BRUSH) {
+            this.context.beginPath();
             this.context.moveTo(this.startPos.x, this.startPos.y);
         }
 
@@ -55,6 +64,9 @@ export default class Paint {
             case TOOL_PENCIL:
                 this.drawFreeLine(this._lineWidth);
                 break;
+            case TOOL_BRUSH:
+                this.drawFreeLine(this._brushSize);
+
             default:
                 break;
         }
