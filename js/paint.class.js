@@ -62,7 +62,9 @@ export default class Paint {
         document.onmouseup = null;
     }
     drawShape() {
+
         //this.context.putImageData(this.savedData, 0, 0);
+               
         this.context.putImageData(this.savedData, 0, 0);
         this.context.beginPath();
         if (this.tool == TOOL_LINE) {
@@ -81,8 +83,10 @@ export default class Paint {
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
             this.context.closePath();
         }
+
         //this.context.moveTo(this.startPos.x, this.startPos.y);
         //this.context.lineTo(this.currentPos.x, this.currentPos.y);
+
         this.context.stroke();
 
     }
