@@ -2,9 +2,10 @@
   "name": "dekuclass",
   "version": "1.0.0",
   "description": "this is an online whiteboard for teaching in virtual classrooms",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "keywords": [
     "canvas",
@@ -12,5 +13,19 @@
     "dekuclass"
   ],
   "author": "martin wainaina",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martinchez/web-paint-app-.git"
+  },
+  "bugs": {
+    "url": "https://github.com/martinchez/web-paint-app-/issues"
+  },
+  "homepage": "https://github.com/martinchez/web-paint-app-#readme"
 }
