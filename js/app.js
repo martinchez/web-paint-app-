@@ -49,6 +49,7 @@ document.querySelectorAll("[data-tool]").forEach(
                     document.querySelector(".group.brush").style.display = "none";
                     break;
                 case Tool.TOOL_BRUSH:
+                case Tool.TOOL_ERASER:
                     document.querySelector(".group.pencil").style.display = "none";
                     document.querySelector(".group.brush").style.display = "block";
                     break;

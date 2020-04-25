@@ -1,6 +1,8 @@
+import { getMouseCoordsOnCanvas, findDistance } from './utility.js'
 import Utility from './utility.class.js';
 import Tool from './tool.class.js';
 import Fill from './fill.class.js';
+
 
 
 export default class Paint {
@@ -56,6 +58,9 @@ export default class Paint {
             this.context.moveTo(this.startPos.x, this.startPos.y);
         }else if(this.tool == Tool.TOOL_PAINT_BUCKET){
             new Fill(this.canvas, Math.round(this.startPos.x), Math.round(this.startPos.y), this.color);
+        }else if (this.tool == Tool.TOOL_ERASER) {
+            this.context.clearRect(this.startPos.x, this.startPos.y,
+                this._brushSize,this._brushSize);
         }
     }
 
@@ -74,6 +79,10 @@ export default class Paint {
                 break;
             case Tool.TOOL_BRUSH:
                 this.drawFreeLine(this._brushSize);
+                break;
+            case Tool.TOOL_ERASER:
+                this.context.clearRect(this.currentPos.x, this.currentPos.y,
+                    this._brushSize, this._brushSize);
                 break;
         }
     }
