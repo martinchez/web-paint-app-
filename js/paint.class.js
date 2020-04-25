@@ -8,23 +8,24 @@ export default class Paint {
         this.canvas = document.getElementById(canvasId);
         this.context = canvas.getContext("2d");
 
+
     }
 
     set activeTool(tool) {
         this.tool = tool;
         //console.log(this.tool);
     }
-    set lineWidth(linewidth){
+    set lineWidth(linewidth) {
         this._lineWidth = linewidth;
-        this.context.lineWidth= this._lineWidth;
+        this.context.lineWidth = this._lineWidth;
     }
-    set brushSize(brushsize){
-        this._brushSize=this.brushsize
-        
+    set brushSize(brushsize) {
+        this._brushSize = this.brushsize
+
     }
-    set selectedColor(color){
-        this.color= color;
-        this.context.strokeStyle= this.color;
+    set selectedColor(color) {
+        this.color = color;
+        this.context.strokeStyle = this.color;
     }
     //set lineWidth(lineWidth){
     //    this._lineWidth= linewidth;
@@ -46,9 +47,18 @@ export default class Paint {
         if (this.tool == TOOL_PENCIL || this.tool == TOOL_BRUSH) {
             this.context.beginPath();
             this.context.moveTo(this.startPos.x, this.startPos.y);
+        } else if (this.tool == TOOL_PAINT_BUCKET){
+            //fill color
+            
+
+        }else if (this.tool == TOOL_ERASER) {
+            this.context.clearRect(this.startPos.x, this.startPos.y,
+                this._brushSize, this._brushSize)
+
         }
 
         //console.log(this.startPos);
+
     }
     onMouseMove(e) {
         this.currentPos = getMouseCoordsOnCanvas(e, this.canvas);
@@ -66,7 +76,10 @@ export default class Paint {
                 break;
             case TOOL_BRUSH:
                 this.drawFreeLine(this._brushSize);
-
+                break;
+            case TOOL_ERASER:
+                this.context.clearRect(this.currentPos.x, this.currentPos.y,
+                    this._brushSize, this._brushSize)
             default:
                 break;
         }
@@ -88,15 +101,15 @@ export default class Paint {
         if (this.tool == TOOL_LINE) {
             this.context.moveTo(this.startPos.x, this.startPos.y);
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
-        } else if(this.tool == TOOL_RECTANGLE){
-            this.context.rect(this.startPos.x , this.startPos.y , this.currentPos.x - this.startPos.x, this.currentPos.y - this.startPos.y);
+        } else if (this.tool == TOOL_RECTANGLE) {
+            this.context.rect(this.startPos.x, this.startPos.y, this.currentPos.x - this.startPos.x, this.currentPos.y - this.startPos.y);
         }
         else if (this.tool == TOOL_CIRCLE) {
-            let distance = findDistance(this.startPos,this.currentPos);
-            this.context.arc(this.startPos.x, this.startPos.y, distance , 0, 2 * Math.PI , false );
+            let distance = findDistance(this.startPos, this.currentPos);
+            this.context.arc(this.startPos.x, this.startPos.y, distance, 0, 2 * Math.PI, false);
         }
         else if (this.tool == TOOL_TRIANGLE) {
-            this.context.moveTo(this.startPos.x + (this.currentPos.x- this.startPos.x) / 2,this.startPos.y);
+            this.context.moveTo(this.startPos.x + (this.currentPos.x - this.startPos.x) / 2, this.startPos.y);
             this.context.lineTo(this.startPos.x, this.currentPos.y);
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
             this.context.closePath();
@@ -108,9 +121,9 @@ export default class Paint {
         this.context.stroke();
 
     }
-    drawFreeLine(lineWidth){
-        this.context.lineWidth=lineWidth;
-        this.context.lineTo(this.currentPos.x , this.currentPos.y);
+    drawFreeLine(lineWidth) {
+        this.context.lineWidth = lineWidth;
+        this.context.lineTo(this.currentPos.x, this.currentPos.y);
         this.context.stroke();
     }
 }
