@@ -1,6 +1,6 @@
 {
   "name": "dekuclass",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "this is an online whiteboard for teaching in virtual classrooms",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "dekuclass"
   ],
   "author": "martin wainaina",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "nodemon": "^2.0.3"
