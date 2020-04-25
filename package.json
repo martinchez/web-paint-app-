@@ -2,10 +2,10 @@
   "name": "dekuclass",
   "version": "1.0.0",
   "description": "this is an online whiteboard for teaching in virtual classrooms",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "keywords": [
     "canvas",
@@ -14,9 +14,7 @@
   ],
   "author": "martin wainaina",
   "license": "UNLICENSED",
-  "dependencies": {
-    "express": "^4.17.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "nodemon": "^2.0.3"
   },
