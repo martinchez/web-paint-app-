@@ -1,101 +1,96 @@
-import { TOOL_LINE, TOOL_RECTANGLE, TOOL_CIRCLE, TOOL_TRIANGLE, TOOL_PAINT_BUCKET, TOOL_PENCIL, TOOL_BRUSH, TOOL_ERASER } from './tool.js';
-
 import Paint from './paint.class.js';
+import Tool from './tool.class.js';
 
-var paint = new Paint("canvas");
-paint.lineWidth = 1;
-paint.activeTool = TOOL_LINE;
-paint.brushSize = 4;
-paint.selectedTool = "#0000";
+let paint  = new Paint("canvas");
+
+// Set defaults
+paint.activeTool = Tool.TOOL_LINE;
+paint.lineWidth = '1';
+paint.brushSize = '4';
+paint.selectedColor = '#000000';
+
+// initialize paint
 paint.init();
 
 document.querySelectorAll("[data-command]").forEach(
-    item => {
-        item.addEventListener("click", e => {
-            console.log(ite.getAttribute("data-command"));
-        });
-    }
-);
-
-document.querySelectorAll("[data-tool]").forEach(
-    item => {
-        item.addEventListener("click", e => {
-            // console.log(ite.getAttribute("data-tool"));
-            document.querySelector("[data-tool].active").classList.toggle("active");
-            item.classList.toggle("active");
-
-            let selectedTool = item.getAttribute("data-tool");
-            paint.activeTool = selectedTool;
-
-            switch (selectedTool) {
-                case TOOL_LINE:
-                case TOOL_TRIANGLE:
-                case TOOL_CIRCLE:
-                case TOOL_RECTANGLE:
-                case TOOL_PENCIL:
-                    //activate shape linewidth groupstyle
-                    document.querySelector(".group.for-shapes").style.display = "block";
-                    //invisible brush linewidths group
-                    document.querySelector(".group.for-brush").style.display = "none";
-                    break;
-                case TOOL_BRUSH:
-                case TOOL_ERASER:
-                    //activate brush line width group
-                    document.querySelector(".group.for-shapes").style.display = "none";
-                    //invisible shape linewidths group
-                    document.querySelector(".group.for-brush").style.display = "block";
-                    break;
-                default:
-                    //make invisible both line width groups
-                    document.querySelector(".group.for-shapes").style.display = "none";
-                    document.querySelector(".group.for-brush").style.display = "none";
-
+    (el) => {
+        el.addEventListener("click", (e) => {
+            let command = el.getAttribute('data-command');
+            
+            if(command == 'undo'){
+                paint.undoPaint();
+            }else if(command == 'download'){
+                var canvas = document.getElementById("canvas");
+                var image = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
+                var link = document.createElement('a');
+                link.download = "my-image.png";
+                link.href = image;
+                link.click();
             }
         });
     }
 );
 
-document.querySelectorAll("[data-line-width]").forEach(
-    item => {
-        item.addEventListener("click", e => {
-            // console.log(ite.getAttribute("data-line-width"));
-            document.querySelector("[data-line-width].active").classList.toggle("active");
-            item.classList.toggle("active");
+document.querySelectorAll("[data-tool]").forEach(
+    (el) => {
+        el.addEventListener("click", (e) => {
+            document.querySelector("[data-tool].active").classList.toggle("active");
+            el.classList.toggle("active");
+            let selectedTool = el.getAttribute("data-tool");
+            paint.activeTool = selectedTool;
 
-            let linewidth = item.getAttribute("data-line-width");
-            paint.lineWidth = linewidth;
+            switch(selectedTool){
+                case Tool.TOOL_LINE:
+                case Tool.TOOL_RECTANGLE:
+                case Tool.TOOL_CIRCLE:
+                case Tool.TOOL_TRIANGLE:
+                case Tool.TOOL_PENCIL:
+                    document.querySelector(".group.pencil").style.display = "block";
+                    document.querySelector(".group.brush").style.display = "none";
+                    break;
+                case Tool.TOOL_BRUSH:
+                    document.querySelector(".group.pencil").style.display = "none";
+                    document.querySelector(".group.brush").style.display = "block";
+                    break;
+                default:
+                    document.querySelector(".group.pencil").style.display = "none";
+                    document.querySelector(".group.brush").style.display = "none";
+            }
 
-            // let linewidth =item.getAttribute("data-line-width");
-            // paint.lineWidth=linewidth;
         });
     }
 );
 
-document.querySelectorAll("[data-brush-width]").forEach(
-    item => {
-        item.addEventListener("click", e => {
-            // console.log(ite.getAttribute("data-line-width"));
-            document.querySelector("[data-brush-width].active").classList.toggle("active");
-            item.classList.toggle("active");
+document.querySelectorAll("[data-line-width]").forEach(
+    (el) => {
+        el.addEventListener("click", (e) =>{
+            document.querySelector("[data-line-width].active").classList.toggle("active");
+            el.classList.toggle("active");
 
-            let brushSize = item.getAttribute("data-brush-width");
-            paint.brushSize = brushSize;
+            paint.lineWidth = el.getAttribute("data-line-width");
+        });
+    }
+);
 
-            // let linewidth =item.getAttribute("data-line-width");
-            // paint.lineWidth=linewidth;
+document.querySelectorAll("[data-brush-size]").forEach(
+    (el) => {
+        el.addEventListener("click", (e) =>{
+            document.querySelector("[data-brush-size].active").classList.toggle("active");
+            el.classList.toggle("active");
+
+            paint.brushSize = el.getAttribute("data-brush-size");
         });
     }
 );
 
 document.querySelectorAll("[data-color]").forEach(
-    item => {
-        item.addEventListener("click", e => {
-            // console.log(ite.getAttribute("data-color"));
+    (el) => {
+        el.addEventListener("click", (e) =>{
             document.querySelector("[data-color].active").classList.toggle("active");
-            item.classList.toggle("active");
-            let color = item.getAttribute("data-color");
+            el.classList.toggle("active");
 
-            paint.selectedColor = color;
+            paint.selectedColor = el.getAttribute("data-color");
         });
     }
 );
+

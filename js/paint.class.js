@@ -1,129 +1,135 @@
-import Point from './point.model.js';
-import { TOOL_LINE, TOOL_RECTANGLE, TOOL_CIRCLE, TOOL_TRIANGLE, TOOL_PAINT_BUCKET, TOOL_PENCIL, TOOL_BRUSH, TOOL_ERASER } from './tool.js';
+import Utility from './utility.class.js';
+import Tool from './tool.class.js';
+import Fill from './fill.class.js';
 
-import { getMouseCoordsOnCanvas, findDistance } from './utility.js';
+
 export default class Paint {
+
     constructor(canvasId) {
-
         this.canvas = document.getElementById(canvasId);
-        this.context = canvas.getContext("2d");
-
-
+        this.context = canvas.getContext('2d');
+        this.undoStack = [];
+        this.undoLimit = 3;
     }
 
+    // Setter functions
+    // To current active tool
     set activeTool(tool) {
         this.tool = tool;
-        //console.log(this.tool);
     }
-    set lineWidth(linewidth) {
-        this._lineWidth = linewidth;
-        this.context.lineWidth = this._lineWidth;
-    }
-    set brushSize(brushsize) {
-        this._brushSize = this.brushsize
 
-    }
+    // To set current selected color
     set selectedColor(color) {
         this.color = color;
+        this.context.fillStyle = this.color;
         this.context.strokeStyle = this.color;
     }
-    //set lineWidth(lineWidth){
-    //    this._lineWidth= linewidth;
-    //    this.context.lineWidth = this._lineWidth;
-    //}
+
+    // To set shapes and pencel stroke size
+    set lineWidth(lineWidth) {
+        this._lineWidth = lineWidth;
+
+    }
+
+    // To set brush stroke size
+    set brushSize(brushSize) {
+        this._brushSize = brushSize;
+    }
 
     init() {
-        this.canvas.onmousedown = e => this.onMouseDown(e);
+        
+        this.canvas.onmousedown = (e) => this.onMouseDown(e);
     }
-    onMouseDown(e) {
-        // this.savedData = this.context.getImageData(0 , 0, this.canvas.clientwidth, this.canvas.height);
-        this.savedData = this.context.getImageData(0, 0, this.canvas.clientWidth, this.canvas.height);
 
-        this.canvas.onmousemove = e => this.onMouseMove(e);
-        document.onmouseup = e => this.onMouseUp(e);
+    onMouseDown(e) {        
+        this.savedImage = this.context.getImageData(0, 0, this.context.canvas.width, this.context.canvas.height);
 
-        this.startPos = getMouseCoordsOnCanvas(e, this.canvas);
+        if(this.undoStack.length >= this.undoLimit) this.undoStack.shift();
+        this.undoStack.push(this.savedImage);
+               
+        this.canvas.onmousemove = (e) => this.onMouseMove(e);
+        document.onmouseup = (e) => this.onMouseUp(e);
+        this.startPos = Utility.getMouseCoordsOnCanvas(this.canvas, e);
 
-        if (this.tool == TOOL_PENCIL || this.tool == TOOL_BRUSH) {
+        if (this.tool == Tool.TOOL_PENCIL || this.tool == Tool.TOOL_BRUSH) {
             this.context.beginPath();
             this.context.moveTo(this.startPos.x, this.startPos.y);
-        } else if (this.tool == TOOL_PAINT_BUCKET){
-            //fill color
-            
-
-        }else if (this.tool == TOOL_ERASER) {
-            this.context.clearRect(this.startPos.x, this.startPos.y,
-                this._brushSize, this._brushSize)
-
+        }else if(this.tool == Tool.TOOL_PAINT_BUCKET){
+            new Fill(this.canvas, Math.round(this.startPos.x), Math.round(this.startPos.y), this.color);
         }
-
-        //console.log(this.startPos);
-
     }
+
     onMouseMove(e) {
-        this.currentPos = getMouseCoordsOnCanvas(e, this.canvas);
-        //console.log(this.currentPos);
+        this.currentPos = Utility.getMouseCoordsOnCanvas(this.canvas, e);
 
         switch (this.tool) {
-            case TOOL_LINE:
-            case TOOL_RECTANGLE:
-            case TOOL_CIRCLE:
-            case TOOL_TRIANGLE:
+            case Tool.TOOL_LINE:
+            case Tool.TOOL_RECTANGLE:
+            case Tool.TOOL_CIRCLE:
+            case Tool.TOOL_TRIANGLE:
                 this.drawShape();
                 break;
-            case TOOL_PENCIL:
+            case Tool.TOOL_PENCIL:
                 this.drawFreeLine(this._lineWidth);
                 break;
-            case TOOL_BRUSH:
+            case Tool.TOOL_BRUSH:
                 this.drawFreeLine(this._brushSize);
                 break;
-            case TOOL_ERASER:
-                this.context.clearRect(this.currentPos.x, this.currentPos.y,
-                    this._brushSize, this._brushSize)
-            default:
-                break;
         }
-
-
     }
+
     onMouseUp(e) {
+        
         this.canvas.onmousemove = null;
         document.onmouseup = null;
     }
+
     drawShape() {
-
-        //this.context.putImageData(this.savedData, 0, 0);
-
-        this.context.putImageData(this.savedData, 0, 0);
-
+        this.context.putImageData(this.savedImage, 0, 0);
         this.context.beginPath();
+        this.context.lineWidth = this._lineWidth;
 
-        if (this.tool == TOOL_LINE) {
+        if (Tool.TOOL_LINE == this.tool) {
+
             this.context.moveTo(this.startPos.x, this.startPos.y);
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
-        } else if (this.tool == TOOL_RECTANGLE) {
+
+        } else if (Tool.TOOL_RECTANGLE == this.tool) {
+
             this.context.rect(this.startPos.x, this.startPos.y, this.currentPos.x - this.startPos.x, this.currentPos.y - this.startPos.y);
-        }
-        else if (this.tool == TOOL_CIRCLE) {
-            let distance = findDistance(this.startPos, this.currentPos);
+
+        } else if (Tool.TOOL_CIRCLE == this.tool) {
+
+            let distance = Utility.calcHypotenuse(this.startPos, this.currentPos);
             this.context.arc(this.startPos.x, this.startPos.y, distance, 0, 2 * Math.PI, false);
-        }
-        else if (this.tool == TOOL_TRIANGLE) {
+
+        } else if (Tool.TOOL_TRIANGLE == this.tool) {
+
             this.context.moveTo(this.startPos.x + (this.currentPos.x - this.startPos.x) / 2, this.startPos.y);
             this.context.lineTo(this.startPos.x, this.currentPos.y);
             this.context.lineTo(this.currentPos.x, this.currentPos.y);
             this.context.closePath();
+
         }
-
-        //this.context.moveTo(this.startPos.x, this.startPos.y);
-        //this.context.lineTo(this.currentPos.x, this.currentPos.y);
-
         this.context.stroke();
-
     }
+
     drawFreeLine(lineWidth) {
         this.context.lineWidth = lineWidth;
         this.context.lineTo(this.currentPos.x, this.currentPos.y);
+        this.context.lineCap = 'round';
+        this.context.lineJoin = 'round';
         this.context.stroke();
     }
+
+    undoPaint(){
+        if(this.undoStack.length > 0){
+            this.context.putImageData(this.undoStack[this.undoStack.length - 1], 0, 0);
+            this.undoStack.pop();
+        }else{
+            alert("No undo available");
+        }
+    }
+
+    
 }
